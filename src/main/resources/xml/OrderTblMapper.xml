@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hz.yz.mapper.OrderTblMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hz.yz.entity.OrderTbl">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="order_no" property="orderNo" />
+        <result column="commodity_code" property="commodityCode" />
+        <result column="count" property="count" />
+        <result column="money" property="money" />
+    </resultMap>
+
+    <sql id="base_field">
+        id,user_id,order_no,commodity_code,money
+    </sql>
+
+    <insert id="saveBatch">
+        insert into order_tbl (user_id,order_no,commodity_code,count,money)
+        values
+        <foreach collection="orders" item="order" index="i" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{order.userId},#{order.orderNo},#{order.commodityCode},#{order.count},#{order.money},
+            </trim>
+        </foreach>
+    </insert>
+
+    <select id="getOrderByUserIdAndOrderNo" resultMap="BaseResultMap">
+        select <include refid="base_field"/>
+        from order_tbl
+        where user_id = #{userId} and order_no = #{orderNo}
+    </select>
+
+    <delete id="deleteAll" >
+        delete from order_tbl where 1=1;
+    </delete>
+
+    <insert id="save">
+        insert into order_tbl (user_id,order_no,commodity_code,count,money)
+        values (#{order.userId},#{order.orderNo},#{order.commodityCode},#{order.count},#{order.money})
+    </insert>
+</mapper>
